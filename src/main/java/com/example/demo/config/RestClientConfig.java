@@ -16,8 +16,8 @@ import java.util.concurrent.Executors;
 public class RestClientConfig {
     private final boolean virtualThreadsEnabled;
 
-    public RestClientConfig(@Value("spring.threads.virtual.enabled") boolean virtualThreadsEnabled) {
-        this.virtualThreadsEnabled = virtualThreadsEnabled;
+    public RestClientConfig(@Value("${spring.threads.virtual.enabled:true}") String virtualThreadsEnabled) {
+        this.virtualThreadsEnabled = Boolean.parseBoolean(virtualThreadsEnabled);
     }
 
     @Bean
