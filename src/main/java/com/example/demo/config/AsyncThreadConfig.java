@@ -2,14 +2,13 @@ package com.example.demo.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
+import org.springframework.core.task.TaskDecorator;
 import org.springframework.core.task.support.ContextPropagatingTaskDecorator;
-import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
@@ -17,7 +16,7 @@ import java.util.concurrent.Executor;
 
 @Configuration
 @EnableAsync
-public class AsyncThreadConfig implements AsyncConfigurer {
+public class AsyncThreadConfig {
     private static final Logger logger = LoggerFactory.getLogger(AsyncThreadConfig.class);
 
     @Value("${spring.threads.virtual2.enabled:false}")
@@ -33,18 +32,19 @@ public class AsyncThreadConfig implements AsyncConfigurer {
     private int maxPoolSize;
 
     @Bean
-    ContextPropagatingTaskDecorator contextPropagatingTaskDecorator() {
+    public TaskDecorator taskDecorator() {
+        // This decorator handles propagation of MDC, SecurityContext, etc.
         return new ContextPropagatingTaskDecorator(); // This depends on micrometer!
     }
 
-    @Bean
-    public AsyncTaskExecutor taskExecutor(ContextPropagatingTaskDecorator decorator) {
+    @Bean(name = "taskExecutor")
+    public AsyncTaskExecutor taskExecutor(TaskDecorator taskDecorator) {
         if (virtualThreadsEnabled) {
             logger.info("Using Virtual Thread Executor for async tasks with name prefix: {}", threadNamePrefix);
             SimpleAsyncTaskExecutor asyncTaskExecutor = new SimpleAsyncTaskExecutor();
-            asyncTaskExecutor.setVirtualThreads(true); // virtual threads enabled
-            asyncTaskExecutor.setTaskDecorator(contextPropagatingTaskDecorator());
-            asyncTaskExecutor.setThreadFactory(Thread.ofVirtual().name(threadNamePrefix, 0).factory());
+            asyncTaskExecutor.setVirtualThreads(true);
+            asyncTaskExecutor.setTaskDecorator(taskDecorator);
+            asyncTaskExecutor.setThreadFactory(Thread.ofVirtual().name("virtual-" + threadNamePrefix, 0).factory());
             asyncTaskExecutor.setTaskTerminationTimeout(5000); // ensure wait for task termination
             return asyncTaskExecutor;
         } else {
@@ -53,8 +53,8 @@ public class AsyncThreadConfig implements AsyncConfigurer {
             executor.setCorePoolSize(corePoolSize);
             executor.setMaxPoolSize(maxPoolSize);
             executor.setQueueCapacity(50);
-            executor.setThreadNamePrefix(threadNamePrefix);
-            executor.setTaskDecorator(decorator);
+            executor.setThreadNamePrefix("regular-" + threadNamePrefix);
+            executor.setTaskDecorator(taskDecorator);
             executor.setWaitForTasksToCompleteOnShutdown(true);
             executor.setAwaitTerminationSeconds(60);
             executor.initialize();
@@ -62,16 +62,5 @@ public class AsyncThreadConfig implements AsyncConfigurer {
                     corePoolSize, maxPoolSize);
             return executor;
         }
-    }
-
-    @Override
-    public Executor getAsyncExecutor() {
-        return taskExecutor(contextPropagatingTaskDecorator());
-    }
-
-    @Override
-    public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
-        return (ex, method, params) ->
-            logger.error("Uncaught async exception in method: {} with params: {}", method.getName(), params, ex);
     }
 }

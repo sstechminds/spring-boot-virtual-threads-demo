@@ -1,10 +1,10 @@
 package com.example.demo.controller;
 
+import com.example.demo.AsyncTaskService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.task.AsyncTaskExecutor;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,6 +20,9 @@ public class HelloController {
 
     @Autowired
     RestClient restClient;
+
+    @Autowired
+    AsyncTaskService asyncTaskService;
 
     @Autowired
     AsyncTaskExecutor taskExecutor;
@@ -88,8 +91,8 @@ public class HelloController {
         logger.info("Starting async Spring method calls");
 
         // Call async methods
-        CompletableFuture<String> future1 = fetchDogImageAsync("call1");
-        CompletableFuture<String> future2 = fetchDogImageAsync("call2");
+        CompletableFuture<String> future1 = asyncTaskService.fetchDogImageAsync("call1");
+        CompletableFuture<String> future2 = asyncTaskService.fetchDogImageAsync("call2");
 
         // Wait for both to complete
         CompletableFuture<Void> allFutures = CompletableFuture.allOf(future1, future2);
@@ -104,24 +107,6 @@ public class HelloController {
         } catch (InterruptedException | ExecutionException e) {
             logger.error("Error waiting for async calls", e);
             return "Error waiting for async calls: " + e.getMessage();
-        }
-    }
-
-    @Async
-    public CompletableFuture<String> fetchDogImageAsync(String callId) {
-        logger.info("Executing async-spring method: {} on thread: {}", callId, Thread.currentThread().getName());
-
-        try {
-            String response = restClient.get()
-                    .uri("https://dog.ceo/api/breeds/image/random")
-                    .retrieve()
-                    .body(String.class);
-
-            logger.info("Completed async-spring method: {}", callId);
-            return CompletableFuture.completedFuture(response);
-        } catch (Exception e) {
-            logger.error("Failed async-spring method: {}", callId, e);
-            return CompletableFuture.completedFuture("Failed to fetch data: " + e.getMessage());
         }
     }
 }
