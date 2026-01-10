@@ -32,7 +32,7 @@ public class AsyncTaskService {
                     .retrieve()
                     .body(String.class);
 
-            logger.info("Completed async-spring method: {}", callId);
+            logger.info("Completed async-spring method: {}", callId); //TODO: TraceId missing here???
             return CompletableFuture.completedFuture(traceId + " "  + response);
         } catch (Exception e) {
             logger.error("Failed async-spring method: {}", callId, e);

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestClient;
 
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -46,7 +47,8 @@ public class HelloController {
     public String async() {
         logger.info("Starting manual async calls with custom executor");
 
-        MDC.put("traceId", "traceAsync");
+        //MDC.put("traceId", "traceAsync");
+        MDC.put("requestId", "async-spring-requestId-" + UUID.randomUUID().toString().replace("-", "").substring(0, 10));
 
         // Create two async tasks to make API calls concurrently using our custom executor
         CompletableFuture<String> future1 = CompletableFuture.supplyAsync(() -> {
@@ -95,7 +97,7 @@ public class HelloController {
     @GetMapping("/info/async-spring")
     public String asyncSpring() {
         logger.info("Starting async Spring method calls");
-        MDC.put("requestId", "async-spring-requestId");
+        MDC.put("requestId", "async-spring-requestId-" + UUID.randomUUID().toString().replace("-", "").substring(0, 10));
         logger.info("Async process started...");
 
         // Call async methods

@@ -2,15 +2,17 @@ package com.example.demo.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.core.task.TaskDecorator;
-import org.springframework.core.task.support.ContextPropagatingTaskDecorator;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+
+import java.util.Map;
 
 @Configuration
 @EnableAsync
@@ -31,9 +33,25 @@ public class AsyncThreadConfig {
 
     @Bean
     public TaskDecorator taskDecorator() {
-        // This standard Spring decorator uses the Micrometer Context Propagation library internally
-        // to handle ThreadLocal-based contexts like SecurityContextHolder, MDC, etc.
-        return new ContextPropagatingTaskDecorator(); // This depends on micrometer!
+        // Custom decorator that propagates MDC context to async threads (including virtual threads)
+        return runnable -> {
+            // Capture MDC context from the calling thread
+            Map<String, String> contextMap = MDC.getCopyOfContextMap();
+
+            return () -> {
+                try {
+                    // Set the captured MDC context in the async thread
+                    if (contextMap != null) {
+                        MDC.setContextMap(contextMap);
+                    }
+                    // Execute the actual task
+                    runnable.run();
+                } finally {
+                    // Clean up MDC after task execution
+                    MDC.clear();
+                }
+            };
+        };
     }
 
     @Bean(name = "taskExecutor")
