@@ -20,11 +20,11 @@ public class ContextPropagationTest {
     void testMdcPropagation() throws ExecutionException, InterruptedException {
         // 1. Set the context in the main/calling thread
         String expectedTraceId = "test-trace-123";
-        MDC.put("traceId", expectedTraceId);
+        MDC.put("requestId", expectedTraceId);
 
         try {
             // 2. Execute the async task
-            CompletableFuture<String> futureResult = asyncTaskService.fetchDogImageAsync("callXYZ");
+            CompletableFuture<String> futureResult = asyncTaskService.fetchDataAsync("callXYZ");
 
             // 3. Wait for the result and assert the propagated context
             String actualTraceId = futureResult.get(); // Blocks until completion
@@ -33,7 +33,7 @@ public class ContextPropagationTest {
 
         } finally {
             // 4. Clean up MDC in the main thread
-            MDC.remove("traceId");
+            MDC.remove("requestId");
         }
     }
 }

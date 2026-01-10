@@ -1,5 +1,5 @@
 ### Test basic RestClient endpoint
-GET http://localhost:8080/api/info/restclient
+GET http://localhost:8080/api/info
 Accept: application/json
 
 ### Test manual async endpoint with CompletableFuture

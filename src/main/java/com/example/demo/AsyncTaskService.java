@@ -18,22 +18,21 @@ public class AsyncTaskService {
     RestClient restClient;
 
     @Async("taskExecutor")
-    public CompletableFuture<String> fetchDogImageAsync(String callId) {
+    public CompletableFuture<String> fetchDataAsync(String callId) {
         logger.info("Executing async-spring method: {} on thread: {}", callId, Thread.currentThread().getName());
 
         // Retrieve the value from MDC within the async thread
-        String traceId = MDC.get("traceId");
         String requestId = MDC.get("requestId");
-        logger.info("Async task executing with traceId: {}, requestId: {}", traceId, requestId);
-
+        logger.info("Async task executing with requestId: {}", requestId);
+        MDC.put("requestId", requestId);
         try {
             String response = restClient.get()
-                    .uri("https://dog.ceo/api/breeds/image/random")
+                    .uri("http://localhost:8080/api/info")
                     .retrieve()
                     .body(String.class);
 
             logger.info("Completed async-spring method: {}", callId); //TODO: TraceId missing here???
-            return CompletableFuture.completedFuture(traceId + " "  + response);
+            return CompletableFuture.completedFuture(requestId);
         } catch (Exception e) {
             logger.error("Failed async-spring method: {}", callId, e);
             return CompletableFuture.completedFuture("Failed to fetch data: " + e.getMessage());

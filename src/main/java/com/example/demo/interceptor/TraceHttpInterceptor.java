@@ -1,5 +1,6 @@
 package com.example.demo.interceptor;
 
+import org.slf4j.MDC;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
@@ -16,15 +17,26 @@ public class TraceHttpInterceptor implements ClientHttpRequestInterceptor {
     public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
         String requestId = request.getHeaders().getFirst(HEADER_REQUEST_ID);
         String sessionId = request.getHeaders().getFirst(HEADER_SESSION_ID);
-        // Generate request/session IDs if missing
+
+        // Try to get requestId from MDC first (propagated from HttpServletRequest in controller)
+        String mdcRequestId = MDC.get("requestId");
+
+        // Use MDC values if available, otherwise check headers
         if (requestId == null) {
-            requestId = UUID.randomUUID().toString();
+            if (mdcRequestId != null) {
+                requestId = mdcRequestId;
+            } else {
+                // Generate new requestId (10 digits)
+                requestId = UUID.randomUUID().toString().replace("-", "").substring(0, 10);
+            }
             request.getHeaders().set(HEADER_REQUEST_ID, requestId);
         }
+
         if (sessionId == null) {
             sessionId = requestId;
             request.getHeaders().set(HEADER_SESSION_ID, sessionId);
         }
+
         return execution.execute(request, body);
     }
 }
