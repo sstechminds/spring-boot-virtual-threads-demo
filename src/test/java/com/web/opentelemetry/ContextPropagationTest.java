@@ -1,5 +1,6 @@
 package com.web.opentelemetry;
 
+import com.web.opentelemetry.service.AsyncTaskService;
 import org.junit.jupiter.api.Test;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
