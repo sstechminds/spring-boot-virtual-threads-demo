@@ -17,7 +17,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 public class AsyncThreadConfig {
     private static final Logger logger = LoggerFactory.getLogger(AsyncThreadConfig.class);
 
-    @Value("${spring.threads.virtual2.enabled:false}")
+    @Value("${spring.threads.virtual.enabled:false}")
     private boolean virtualThreadsEnabled;
 
     @Value("${spring.task.execution.thread-name-prefix:async-thread-}")

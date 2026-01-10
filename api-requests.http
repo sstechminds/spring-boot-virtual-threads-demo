@@ -1,0 +1,28 @@
+### Test basic RestClient endpoint
+GET http://localhost:8080/api/info/restclient
+Accept: application/json
+
+### Test manual async endpoint with CompletableFuture
+GET http://localhost:8080/api/info/async
+Accept: application/json
+
+### Test Spring @Async endpoint
+GET http://localhost:8080/api/info/async-spring
+Accept: application/json
+
+### Test Actuator Health endpoint
+GET http://localhost:8080/actuator/health
+Accept: application/json
+
+### Test Actuator Metrics endpoint
+GET http://localhost:8080/actuator/metrics
+Accept: application/json
+
+### Test Actuator Prometheus endpoint
+GET http://localhost:8080/actuator/prometheus
+Accept: text/plain
+
+### Test Actuator Info endpoint
+GET http://localhost:8080/actuator/info
+Accept: application/json
+
