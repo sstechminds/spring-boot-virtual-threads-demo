@@ -14,7 +14,7 @@
     <groupId>com.example</groupId>
     <artifactId>spring-boot-virtual-threads-demo</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>spring-boot-web-demo</name>
+    <name>spring-boot-virtual-thread-demo</name>
     <description>Spring Boot Virtual Threads Demo Project</description>
 
     <properties>
@@ -51,6 +51,16 @@
         <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>context-propagation</artifactId>
+        </dependency>
+
+        <!-- Added for tracking using MDC-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-opentelemetry</artifactId>
         </dependency>
 
         <!-- SLF4J Logging -->

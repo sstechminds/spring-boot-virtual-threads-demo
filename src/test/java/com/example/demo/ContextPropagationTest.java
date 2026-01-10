@@ -20,7 +20,7 @@ public class ContextPropagationTest {
     void testMdcPropagation() throws ExecutionException, InterruptedException {
         // 1. Set the context in the main/calling thread
         String expectedTraceId = "test-trace-123";
-        MDC.put("tracerId", expectedTraceId);
+        MDC.put("traceId", expectedTraceId);
 
         try {
             // 2. Execute the async task
@@ -33,7 +33,7 @@ public class ContextPropagationTest {
 
         } finally {
             // 4. Clean up MDC in the main thread
-            MDC.remove("tracerId");
+            MDC.remove("traceId");
         }
     }
 }

@@ -22,7 +22,7 @@ public class AsyncTaskService {
         logger.info("Executing async-spring method: {} on thread: {}", callId, Thread.currentThread().getName());
 
         // Retrieve the value from MDC within the async thread
-        String traceId = MDC.get("tracerId");
+        String traceId = MDC.get("traceId");
         logger.info("Async task executing with traceId: {}", traceId);
 
         try {

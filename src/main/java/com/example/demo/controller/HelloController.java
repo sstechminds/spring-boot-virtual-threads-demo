@@ -46,7 +46,7 @@ public class HelloController {
     public String async() {
         logger.info("Starting manual async calls with custom executor");
 
-        MDC.put("tracerId", "traceAsync");
+        MDC.put("traceId", "traceAsync");
 
         // Create two async tasks to make API calls concurrently using our custom executor
         CompletableFuture<String> future1 = CompletableFuture.supplyAsync(() -> {
@@ -56,7 +56,7 @@ public class HelloController {
                         .uri("https://dog.ceo/api/breeds/image/random")
                         .retrieve()
                         .body(String.class);
-                return MDC.get("tracerId") + " " + resp;
+                return MDC.get("traceId") + " " + resp;
             } catch (Exception e) {
                 return "Failed to fetch data from first API call: " + e.getMessage();
             }
@@ -69,7 +69,7 @@ public class HelloController {
                         .uri("https://dog.ceo/api/breeds/image/random")
                         .retrieve()
                         .body(String.class);
-                return MDC.get("tracerId") + " " + resp;
+                return MDC.get("traceId") + " " + resp;
             } catch (Exception e) {
                 return "Failed to fetch data from second API call: " + e.getMessage();
             }
@@ -96,7 +96,9 @@ public class HelloController {
     public String asyncSpring() {
         logger.info("Starting async Spring method calls");
 
-        MDC.put("tracerId", "traceAsyncSpring");
+        MDC.put("traceId", "traceAsyncSpring");
+        MDC.put("requestId", "async-spring-requestId");
+        logger.info("Async process started...");
 
         // Call async methods
         CompletableFuture<String> future1 = asyncTaskService.fetchDogImageAsync("call1");

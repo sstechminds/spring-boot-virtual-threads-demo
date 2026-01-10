@@ -116,7 +116,7 @@ The performance tests demonstrate the benefits of virtual threads when handling 
 ## Project Structure
 
 ```
-spring-boot-web-demo/
+spring-boot-virtual-thread-demo/
 ├── src/
 │   ├── main/
 │   │   ├── java/

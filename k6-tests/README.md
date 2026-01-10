@@ -75,7 +75,7 @@ k6 run soak-test.js
 
 1. **Start the application:**
 ```bash
-cd /Users/g3753/IdeaProjects/spring-boot-web-demo
+cd /Users/g3753/IdeaProjects/spring-boot-virtual-thread-demo
 mvn spring-boot:run
 ```
 
