@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.AsyncTaskService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -45,14 +46,17 @@ public class HelloController {
     public String async() {
         logger.info("Starting manual async calls with custom executor");
 
+        MDC.put("tracerId", "traceAsync");
+
         // Create two async tasks to make API calls concurrently using our custom executor
         CompletableFuture<String> future1 = CompletableFuture.supplyAsync(() -> {
             try {
                 logger.info("Executing async call 1 on thread: {}", Thread.currentThread().getName());
-                return restClient.get()
+                var resp = restClient.get()
                         .uri("https://dog.ceo/api/breeds/image/random")
                         .retrieve()
                         .body(String.class);
+                return MDC.get("tracerId") + " " + resp;
             } catch (Exception e) {
                 return "Failed to fetch data from first API call: " + e.getMessage();
             }
@@ -61,10 +65,11 @@ public class HelloController {
         CompletableFuture<String> future2 = CompletableFuture.supplyAsync(() -> {
             try {
                 logger.info("Executing async call 2 on thread: {}", Thread.currentThread().getName());
-                return restClient.get()
+                var resp = restClient.get()
                         .uri("https://dog.ceo/api/breeds/image/random")
                         .retrieve()
                         .body(String.class);
+                return MDC.get("tracerId") + " " + resp;
             } catch (Exception e) {
                 return "Failed to fetch data from second API call: " + e.getMessage();
             }
@@ -77,9 +82,10 @@ public class HelloController {
             allFutures.get(); // Wait for both to complete
             String result1 = future1.get();
             String result2 = future2.get();
-
             logger.info("All async calls completed");
-            return "{\n  \"call1\": " + result1 + ",\n  \"call2\": " + result2 + "\n}";
+            var resp = "{\n  \"call1\": " + result1 + ",\n  \"call2\": " + result2 + "\n}";
+            logger.info(resp);
+            return resp;
         } catch (InterruptedException | ExecutionException e) {
             logger.error("Error waiting for async calls", e);
             return "Error waiting for async calls: " + e.getMessage();
@@ -89,6 +95,8 @@ public class HelloController {
     @GetMapping("/info/async-spring")
     public String asyncSpring() {
         logger.info("Starting async Spring method calls");
+
+        MDC.put("tracerId", "traceAsyncSpring");
 
         // Call async methods
         CompletableFuture<String> future1 = asyncTaskService.fetchDogImageAsync("call1");

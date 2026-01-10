@@ -41,9 +41,10 @@ public class RestClientConfig {
     public RestClient restClient(RestClient.Builder builder,
                                  JdkClientHttpRequestFactory clientHttpRequestFactory,
                                  ClientHttpRequestInterceptor traceHttpInterceptor) {
-        builder.requestFactory(clientHttpRequestFactory);
-        builder.requestInterceptor(traceHttpInterceptor);
-        builder.defaultHeader("Content-Type", "application/json");
-        return builder.build();
+        return builder
+                .requestFactory(clientHttpRequestFactory)
+                .requestInterceptor(traceHttpInterceptor)
+                .defaultHeader("Content-Type", "application/json")
+                .build();
     }
 }

@@ -12,8 +12,6 @@ import org.springframework.core.task.support.ContextPropagatingTaskDecorator;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
-import java.util.concurrent.Executor;
-
 @Configuration
 @EnableAsync
 public class AsyncThreadConfig {
@@ -33,7 +31,8 @@ public class AsyncThreadConfig {
 
     @Bean
     public TaskDecorator taskDecorator() {
-        // This decorator handles propagation of MDC, SecurityContext, etc.
+        // This standard Spring decorator uses the Micrometer Context Propagation library internally
+        // to handle ThreadLocal-based contexts like SecurityContextHolder, MDC, etc.
         return new ContextPropagatingTaskDecorator(); // This depends on micrometer!
     }
 

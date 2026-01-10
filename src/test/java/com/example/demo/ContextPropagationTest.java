@@ -8,8 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class ContextPropagationTest {
@@ -21,7 +20,7 @@ public class ContextPropagationTest {
     void testMdcPropagation() throws ExecutionException, InterruptedException {
         // 1. Set the context in the main/calling thread
         String expectedTraceId = "test-trace-123";
-        MDC.put("traceId", expectedTraceId);
+        MDC.put("tracerId", expectedTraceId);
 
         try {
             // 2. Execute the async task
@@ -29,12 +28,12 @@ public class ContextPropagationTest {
 
             // 3. Wait for the result and assert the propagated context
             String actualTraceId = futureResult.get(); // Blocks until completion
-            assertNotNull(actualTraceId);
+            assertFalse(actualTraceId.startsWith("null"));
             assertEquals(expectedTraceId, actualTraceId, "The traceId should be propagated to the async thread");
 
         } finally {
             // 4. Clean up MDC in the main thread
-            MDC.remove("traceId");
+            MDC.remove("tracerId");
         }
     }
 }

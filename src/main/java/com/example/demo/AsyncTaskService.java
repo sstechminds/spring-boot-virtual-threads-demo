@@ -22,7 +22,7 @@ public class AsyncTaskService {
         logger.info("Executing async-spring method: {} on thread: {}", callId, Thread.currentThread().getName());
 
         // Retrieve the value from MDC within the async thread
-        String traceId = MDC.get("traceId");
+        String traceId = MDC.get("tracerId");
         logger.info("Async task executing with traceId: {}", traceId);
 
         try {
@@ -32,7 +32,7 @@ public class AsyncTaskService {
                     .body(String.class);
 
             logger.info("Completed async-spring method: {}", callId);
-            return CompletableFuture.completedFuture(traceId);
+            return CompletableFuture.completedFuture(traceId + " "  + response);
         } catch (Exception e) {
             logger.error("Failed async-spring method: {}", callId, e);
             return CompletableFuture.completedFuture("Failed to fetch data: " + e.getMessage());
