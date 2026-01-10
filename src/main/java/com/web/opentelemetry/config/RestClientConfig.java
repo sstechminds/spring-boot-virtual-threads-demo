@@ -1,6 +1,6 @@
-package com.example.demo.config;
+package com.web.opentelemetry.config;
 
-import com.example.demo.interceptor.TraceHttpInterceptor;
+import com.web.opentelemetry.interceptor.TraceHttpInterceptor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,6 +1,6 @@
-package com.example.demo.controller;
+package com.web.opentelemetry.controller;
 
-import com.example.demo.AsyncTaskService;
+import com.web.opentelemetry.AsyncTaskService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +16,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-import static com.example.demo.interceptor.TraceHttpInterceptor.HEADER_REQUEST_ID;
+import static com.web.opentelemetry.interceptor.TraceHttpInterceptor.HEADER_REQUEST_ID;
 
 @RestController
 @RequestMapping("/api")

@@ -1,4 +1,4 @@
-package com.example.demo.interceptor;
+package com.web.opentelemetry.interceptor;
 
 import org.slf4j.MDC;
 import org.springframework.http.HttpRequest;

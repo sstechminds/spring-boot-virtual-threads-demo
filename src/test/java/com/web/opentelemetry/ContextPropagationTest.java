@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.web.opentelemetry;
 
 import org.junit.jupiter.api.Test;
 import org.slf4j.MDC;
