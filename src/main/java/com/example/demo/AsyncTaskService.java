@@ -23,7 +23,8 @@ public class AsyncTaskService {
 
         // Retrieve the value from MDC within the async thread
         String traceId = MDC.get("traceId");
-        logger.info("Async task executing with traceId: {}", traceId);
+        String requestId = MDC.get("requestId");
+        logger.info("Async task executing with traceId: {}, requestId: {}", traceId, requestId);
 
         try {
             String response = restClient.get()

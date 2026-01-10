@@ -95,8 +95,6 @@ public class HelloController {
     @GetMapping("/info/async-spring")
     public String asyncSpring() {
         logger.info("Starting async Spring method calls");
-
-        MDC.put("traceId", "traceAsyncSpring");
         MDC.put("requestId", "async-spring-requestId");
         logger.info("Async process started...");
 

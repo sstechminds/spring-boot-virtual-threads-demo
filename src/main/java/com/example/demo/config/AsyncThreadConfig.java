@@ -41,19 +41,20 @@ public class AsyncThreadConfig {
         if (virtualThreadsEnabled) {
             logger.info("Using Virtual Thread Executor for async tasks with name prefix: {}", threadNamePrefix);
             SimpleAsyncTaskExecutor asyncTaskExecutor = new SimpleAsyncTaskExecutor();
-            asyncTaskExecutor.setVirtualThreads(true);
             asyncTaskExecutor.setTaskDecorator(taskDecorator);
-            asyncTaskExecutor.setThreadFactory(Thread.ofVirtual().name("virtual-" + threadNamePrefix, 0).factory());
+            asyncTaskExecutor.setVirtualThreads(true);
+            asyncTaskExecutor.setThreadNamePrefix("virtual-" + threadNamePrefix);
+            //asyncTaskExecutor.setThreadFactory(Thread.ofVirtual().name("virtual-" + threadNamePrefix, 0).factory());
             asyncTaskExecutor.setTaskTerminationTimeout(5000); // ensure wait for task termination
             return asyncTaskExecutor;
         } else {
             logger.info("Using Custom ThreadPoolTaskExecutor with thread-name-prefix: {}", threadNamePrefix);
             ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+            executor.setTaskDecorator(taskDecorator);
             executor.setCorePoolSize(corePoolSize);
             executor.setMaxPoolSize(maxPoolSize);
             executor.setQueueCapacity(50);
             executor.setThreadNamePrefix("regular-" + threadNamePrefix);
-            executor.setTaskDecorator(taskDecorator);
             executor.setWaitForTasksToCompleteOnShutdown(true);
             executor.setAwaitTerminationSeconds(60);
             executor.initialize();
