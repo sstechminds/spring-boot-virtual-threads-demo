@@ -163,4 +163,9 @@ cd existing_repo
 git remote add origin https://gitlab.com/rvangala/spring-boot-virtual-threads-demo.git
 git branch -M main
 git push -uf origin main
+
+## References
+
+https://www.baeldung.com/spring-6-virtual-threads
+
 ```
