@@ -16,7 +16,6 @@ else
   java -Djarmode=tools -jar app.jar extract --destination application
 
   cd application
-
   java -XX:+UseCompactObjectHeaders -XX:AOTCacheOutput=app.aot -Dspring.context.exit=onRefresh -jar app.jar
-  java -XX:+UseCompactObjectHeaders -XX:AOTCache=app.aot -jar app.jar
+  java -XshowSettings:system -XX:MaxRAMPercentage=75 -XX:+UseCompactObjectHeaders -XX:AOTCache=app.aot -jar app.jar
 fi
