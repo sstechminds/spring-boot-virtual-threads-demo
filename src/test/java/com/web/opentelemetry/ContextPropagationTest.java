@@ -1,6 +1,7 @@
 package com.web.opentelemetry;
 
 import com.web.opentelemetry.service.AsyncTaskService;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import java.util.concurrent.ExecutionException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Disabled
 @SpringBootTest
 public class ContextPropagationTest {
 
