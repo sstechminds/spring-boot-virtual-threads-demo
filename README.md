@@ -1,17 +1,12 @@
 # Spring Boot Virtual Threads Demo
 
-A Spring Boot web application to demonstrate MDC with Virtual Threads!
-
-## Features
-
-- Spring Boot 4.0.1 (latest version)
-- Java 21
-- Spring Web (REST API support)
+A Spring Boot web application to demonstrate MDC tracking with Open Telemetry with Virtual Threads!
 
 ## Prerequisites
 
-- Java 21 or higher
-- Maven 3.6+
+- Java 25 or higher
+- Maven 3.9+
+- Spring Boot 4.0.1 (latest version)
 
 ## Build and Run
 
