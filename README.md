@@ -64,12 +64,20 @@ brew install k6
 
 ```bash
 # Start the application
+
+## Maven build and run
 mvn spring-boot:run
+
+## Docker build and run
+docker build --progress plain -t virtual-threads-demo .
+docker run virtual-threads-demo
 
 # In another terminal, run the performance test
 cd k6-tests
 ./quick-test.sh
 ```
+
+
 
 ### Available Tests
 
