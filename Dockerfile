@@ -19,4 +19,4 @@ RUN cp -fr application/* .
 RUN java -XX:+UseCompactObjectHeaders -XX:AOTCacheOutput=app.aot -Dspring.context.exit=onRefresh -jar app.jar
 # Expose the port your application listens on (e.g., 8080 for Spring Boot)
 EXPOSE 8080
-ENTRYPOINT ["java", "-XX:AOTCache=app.aot", "-XX:+UseCompactObjectHeaders", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-XX:MaxRAMPercentage=75", "-XshowSettings:system", "-XX:AOTCache=app.aot", "-XX:+UseCompactObjectHeaders", "-jar", "app.jar"]
