@@ -2,8 +2,7 @@ package com.web.opentelemetry.controller;
 
 import com.web.opentelemetry.service.AsyncTaskService;
 import jakarta.servlet.http.HttpServletRequest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.task.AsyncTaskExecutor;
@@ -18,11 +17,10 @@ import java.util.concurrent.ExecutionException;
 
 import static com.web.opentelemetry.interceptor.TraceHttpInterceptor.HEADER_REQUEST_ID;
 
+@Slf4j
 @RestController
 @RequestMapping("/api")
 public class ThreadsLogTraceController {
-    private static final Logger logger = LoggerFactory.getLogger(ThreadsLogTraceController.class);
-
     @Autowired
     RestClient restClient;
 
@@ -41,7 +39,7 @@ public class ThreadsLogTraceController {
                 : Thread.currentThread().getName() + "-" + UUID.randomUUID().toString().replace("-", "").substring(0, 10);
         MDC.put("requestId", requestId);
 
-        logger.info("In the info endpoint");
+        log.info("In the info endpoint");
         String response;
         try {
             response = restClient.get()
@@ -65,11 +63,11 @@ public class ThreadsLogTraceController {
                 : Thread.currentThread().getName() + "-" + UUID.randomUUID().toString().replace("-", "").substring(0, 10);
         MDC.put("requestId", requestId);
 
-        logger.info("Starting manual async calls from Main thread");
+        log.info("Starting manual async calls from Main thread");
         // Create two async tasks to make API calls concurrently using our custom executor
         CompletableFuture<String> future1 = CompletableFuture.supplyAsync(() -> {
             try {
-                logger.info("Executing async call 1 on thread: {}", Thread.currentThread().getName());
+                log.info("Executing async call 1 on thread: {}", Thread.currentThread().getName());
                 var resp = restClient.get()
                         .uri("http://localhost:8080/api/info")
                         .retrieve()
@@ -82,7 +80,7 @@ public class ThreadsLogTraceController {
 
         CompletableFuture<String> future2 = CompletableFuture.supplyAsync(() -> {
             try {
-                logger.info("Executing async call 2 on thread: {}", Thread.currentThread().getName());
+                log.info("Executing async call 2 on thread: {}", Thread.currentThread().getName());
                 var resp = restClient.get()
                         .uri("http://localhost:8080/api/info")
                         .retrieve()
@@ -100,12 +98,12 @@ public class ThreadsLogTraceController {
             allFutures.get(); // Wait for both to complete
             String result1 = future1.get();
             String result2 = future2.get();
-            logger.info("All async calls completed");
+            log.info("All async calls completed");
             var resp = "{\n  \"call1\": " + result1 + ",\n  \"call2\": " + result2 + "\n}";
-            logger.info(resp);
+            log.info(resp);
             return resp;
         } catch (InterruptedException | ExecutionException e) {
-            logger.error("Error waiting for async calls", e);
+            log.error("Error waiting for async calls", e);
             return "Error waiting for async calls: " + e.getMessage();
         } finally {
             MDC.clear();
@@ -121,7 +119,7 @@ public class ThreadsLogTraceController {
                 : Thread.currentThread().getName() + "-" + UUID.randomUUID().toString().replace("-", "").substring(0, 10);
         MDC.put("requestId", requestId);
 
-        logger.info("Starting Spring async calls from Main thread");
+        log.info("Starting Spring async calls from Main thread");
         // Call async methods
         CompletableFuture<String> future1 = asyncTaskService.fetchDataAsync("call1");
         CompletableFuture<String> future2 = asyncTaskService.fetchDataAsync("call2");
@@ -134,10 +132,10 @@ public class ThreadsLogTraceController {
             String result1 = future1.get();
             String result2 = future2.get();
 
-            logger.info("All async calls completed");
+            log.info("All async calls completed");
             return "{\n  \"call1\": " + result1 + ",\n  \"call2\": " + result2 + "\n}";
         } catch (InterruptedException | ExecutionException e) {
-            logger.error("Error waiting for async calls", e);
+            log.error("Error waiting for async calls", e);
             return "Error waiting for async calls: " + e.getMessage();
         } finally {
             MDC.clear();

@@ -76,7 +76,7 @@ public class RestClientBuilderFactory {
     /**
      * Create a RestClient with additional interceptors
      */
-    public RestClient.Builder addInterceptors(ClientHttpRequestInterceptor... additionalInterceptors) {
+    public RestClient.Builder createWithInterceptors(ClientHttpRequestInterceptor... additionalInterceptors) {
         RestClient.Builder builder = builder();
         for (ClientHttpRequestInterceptor interceptor : additionalInterceptors) {
             builder.requestInterceptor(interceptor);
@@ -84,11 +84,9 @@ public class RestClientBuilderFactory {
         return builder;
     }
 
-    public RestClient.Builder addTimeout(Duration connectTimeout, Duration readTimeout) {
-        HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
-        factory.setConnectionRequestTimeout(connectTimeout);
-        factory.setReadTimeout(readTimeout);
-        return builder().requestFactory(factory);
+    public RestClient.Builder createWithTimeout(Duration connectTimeout, Duration readTimeout, boolean virtualThreadsEnabled) {
+        JdkClientHttpRequestFactory customFactory = clientHttpRequestFactory(connectTimeout, readTimeout, virtualThreadsEnabled);
+        return builder().requestFactory(customFactory);
     }
 
     public RestClient.Builder createWithVirtualThreads() {
