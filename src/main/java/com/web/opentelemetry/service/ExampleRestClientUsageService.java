@@ -76,9 +76,10 @@ public class ExampleRestClientUsageService {
      * Example creating a one-time client with custom timeout
      */
     public String fetchWithCustomTimeout(String url) {
-        RestClient client = restClientBuilderFactory.addTimeout(
+        RestClient client = restClientBuilderFactory.createWithTimeout(
             Duration.ofSeconds(2),   // Quick connect timeout
-            Duration.ofSeconds(10)   // Read timeout
+            Duration.ofSeconds(10),   // Read timeout
+            false
         ).build();
 
         return client.get()
@@ -113,7 +114,7 @@ public class ExampleRestClientUsageService {
             return response;
         };
 
-        RestClient client = restClientBuilderFactory.addInterceptors(loggingInterceptor).build();
+        RestClient client = restClientBuilderFactory.createWithInterceptors(loggingInterceptor).build();
 
         return client.get()
                 .uri(url)

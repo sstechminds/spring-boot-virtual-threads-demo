@@ -51,7 +51,7 @@ class RestClientBuilderFactoryTest {
     @Test
     void testCreateRestClientWithCustomTimeout() {
         RestClient client = restClientBuilderFactory
-                .addTimeout(Duration.ofSeconds(5), Duration.ofSeconds(30))
+                .createWithTimeout(Duration.ofSeconds(5), Duration.ofSeconds(30), true)
                 .defaultHeader("User-Agent", "Spring-Boot-App/1.0")
                 .build();
         assertNotNull(client, "RestClient should not be null");
