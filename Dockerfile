@@ -16,7 +16,8 @@ COPY --from=builder /app/target/*.jar app.jar
 RUN  echo "Compile and Run app in optimized mode to improve startup time..."
 RUN java -Djarmode=tools -jar /app/app.jar extract --destination application
 RUN cp -fr application/* .
+# https://katyella.com/blog/java-25-performance-breakthrough-30-percent-cpu-reduction/
 RUN java -XX:+UseCompactObjectHeaders -XX:AOTCacheOutput=app.aot -Dspring.context.exit=onRefresh -jar app.jar
-# Expose the port your application listens on (e.g., 8080 for Spring Boot)
+
 EXPOSE 8080
 ENTRYPOINT ["java", "-XX:MaxRAMPercentage=75", "-XshowSettings:system", "-XX:AOTCache=app.aot", "-XX:+UseCompactObjectHeaders", "-jar", "app.jar"]
