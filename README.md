@@ -7,6 +7,11 @@ A Spring Boot web application to demonstrate MDC tracking with Open Telemetry wi
 - Java 25 or higher
 - Maven 3.9+
 - Spring Boot 4.0.1 (latest version)
+  - https://medium.com/@sibinraziya/spring-boot-4-http-interfaces-declarative-rest-clients-with-httpexchange-a-complete-guide-3e4dd2686a1f
+- Open Telemetry - Tracing & Metrics :
+  - https://spring.io/blog/2025/11/18/opentelemetry-with-spring-boot
+  - https://github.com/mhalbritter/spring-boot-and-opentelemetry
+  - https://docs.spring.io/spring-boot/reference/actuator/tracing.html
 
 ## Build and Run
 
