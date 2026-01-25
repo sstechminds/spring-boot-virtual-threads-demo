@@ -2,10 +2,8 @@ name: Java CI Build
 # https://github.com/actions/checkout/tree/main/.github
 
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+#  push:
+#    branches: [ "main" ]
   workflow_call:
 
 permissions:
