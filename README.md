@@ -35,6 +35,10 @@ mvn clean package
 java -jar target/spring-boot-virtual-threads-demo-0.0.1-SNAPSHOT.jar
 ```
 
+### Using Docker
+docker build -t image_name:tag .
+docker run -d -p 8080:80 --name sbvirtualthreads spring-boot-virtual-threads-demo:1.0
+
 ## API Endpoints
 
 Once the application is running, you can access:
