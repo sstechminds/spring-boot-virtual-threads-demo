@@ -169,3 +169,16 @@ git remote add origin https://gitlab.com/rvangala/spring-boot-virtual-threads-de
 git branch -M main
 git push -uf origin main
 ```
+
+## Use Agent SKILLS and OpenCode
+[Agent SKILLS](https://skills.sh)
+```
+npm install skills
+npx skills add https://github.com/snakeo/claude-debug-and-refactor-skills-plugin --skill debug:spring-boot
+```
+
+[OpenCode](https://opencode.ai/)
+```
+npm i -g opencode-ai 
+opencode -> /connect -> Select your LLM
+```
