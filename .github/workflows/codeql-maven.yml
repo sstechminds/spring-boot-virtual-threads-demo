@@ -11,7 +11,7 @@ concurrency:
 jobs:
   codeql:
     name: codeql
-    uses: sstechminds/spring-boot-virtual-threads-demo/.github/workflows/codeql-analysis.yml@main
+    uses: sstechminds/spring-boot-virtual-threads-demo/.github/workflows/codeql-analysis.yml
     with:
       java: 25
       pom: pom.xml
