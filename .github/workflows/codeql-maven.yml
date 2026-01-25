@@ -1,8 +1,10 @@
 name: CodeQL - Maven
 
 on:
-  schedule:
-    - cron: '6 11 * * SUN'
+  push:
+    branches: [ main ]
+#  schedule:
+#    - cron: '6 11 * * SUN'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
