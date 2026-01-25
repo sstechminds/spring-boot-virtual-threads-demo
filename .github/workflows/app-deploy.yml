@@ -36,12 +36,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
-#      - name: Merge pr
-#        run: gh pr merge --auto --squash "$PR_URL"
-#        env:
-#          PR_URL: ${{ github.envent.pull_request.html_url }}
-#          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#          ENV: ${{ inputs.environment }}
+      - name: Merge pr
+        run: gh pr merge --auto --squash "$PR_URL"
+        env:
+          PR_URL: ${{ github.envent.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ENV: ${{ inputs.environment }}
 
   deploy:
     name: Merge PR
@@ -56,4 +56,4 @@ jobs:
           echo "$(date)"
 
       - name: Deploy.git
-        uses: ./.github/workflows/app-build.yml
+        uses: ../.github/workflows/app-build.yml
