@@ -20,4 +20,5 @@ RUN cp -fr application/* .
 RUN java -XX:+UseCompactObjectHeaders -XX:AOTCacheOutput=app.aot -Dspring.context.exit=onRefresh -jar app.jar
 
 EXPOSE 8080
+# 75% ensures allocated memory and resources are used efficiently. AND, enough memory is reserved/left(25%) for the non-heap usage(avoids OutOfMemory errors).
 ENTRYPOINT ["java", "-XX:MaxRAMPercentage=75", "-XshowSettings:system", "-XX:AOTCache=app.aot", "-XX:+UseCompactObjectHeaders", "-jar", "app.jar"]
