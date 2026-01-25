@@ -1,0 +1,51 @@
+name: Java CI with Maven
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: write
+  pull-requests: write
+  checks: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+#    runs-on:
+#      group: 'gh-runner-group-1'
+    steps:
+      - name: Map envs
+        run: |
+          echo "environment=dev" >> $GITHUB_ENV
+
+      - name: Checkout repository
+        run: actions/checkout@v4
+
+      - name: Set up JDK 25
+        uses: actions/setup-java@v4
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Build with Maven
+        run: mvn clean package -Denv=${{ env.environment }} # Generates the fat jar
+
+      - name: call my action
+        id: action
+        uses: ./.github/actions/custom-actions
+        with:
+          testEnv: ${{ env.environment }}
+        run: |
+          echo "$(date)"
+
+      - name: Log status
+        id: logging
+        if: always()
+        with:
+          testEnv: ${{ env.environment }}
+        run: |
+          echo "$(date)"

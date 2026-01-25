@@ -1,0 +1,87 @@
+# Please see the documentation for all configuration options:
+# https://docs.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
+version: 2
+registries:
+  my-company-maven:
+    type: maven-repository
+    url: https://maven.my-company.com
+    username: ${{secrets.ARTIFACTORY_USER}} # Use the secret name defined in Step 1
+    password: ${{secrets.ARTIFACTORY_PASSWORD}} # Use the secret name defined in Step 1
+    # Optionally, use 'replaces-base: true' if this registry replaces the default public registry
+    replaces-base: false
+  # Define the default public registry to ensure public packages are also updated
+  maven-central:
+    type: maven-repository
+    url: https://repo.maven.apache.org/maven2
+
+  # Define a name for your private registry (e.g., 'my-private-npm')
+  my-company-npm:
+    type: npm-registry
+    url: https://npm.my-company.com
+    username: ${{secrets.ARTIFACTORY_USER}} # Use the secret name defined in Step 1
+    password: ${{secrets.ARTIFACTORY_PASSWORD}} # Use the secret name defined in Step 1
+    # Optionally, use 'replaces-base: true' if this registry replaces the default public registry
+    replaces-base: false
+  # Define the default public registry to ensure public packages are also updated
+  npm-public:
+    type: npm-registry
+    url: https://registry.npmjs.org/
+
+updates:
+  # Configuration for the npm package ecosystem
+  - package-ecosystem: "maven"
+    directory: "/" # Change if your pom.xml is in a subfolder
+    schedule:
+      interval: "weekly" # How often to check for updates (daily, weekly, monthly)
+      time: "04:00" # Time of day (UTC)
+    #      timezone: "America/Chicago"
+    registries:
+      - my-company-maven # Reference the defined registry name
+      - maven-central # Reference the defined public registry name
+    allow:
+      # Allow only direct dependencies. For maven, this is default.
+      - dependency-type: direct
+    labels:
+      - 'dependencies'
+      - 'java'
+    commit-message:
+      # this is optional. Adds prefix "maven" to PRs
+      prefix: maven
+    groups:
+      all-dependencies:
+        patterns:
+          - "*"
+    ignore:
+      # pkgs to exclude and versions.
+      # Ignore major version updates and only update minor/patch versions
+      - dependency-name: "*"
+        update-types: [version-update:semver-major]
+
+  # Configuration for the npm package ecosystem
+  - package-ecosystem: "npm"
+    directory: "/" # Location of your package.json
+    schedule:
+      interval: "weekly" # How often to check for updates (daily, weekly, monthly)
+      time: "04:00" # Time of day (UTC)
+#      timezone: "America/Chicago"
+    registries:
+      - my-private-maven # Reference the defined registry name
+      - maven-central # Reference the defined public registry name
+    allow:
+      # Allow only direct dependencies. For maven, this is default.
+      - dependency-type: direct
+    labels:
+      - 'dependencies'
+      - 'javascript'
+    commit-message:
+      # this is optional. Adds prefix "npm" to PRs
+      prefix: npm
+    groups:
+      all-dependencies:
+        patterns:
+          - "*"
+    ignore:
+      # pkgs to exclude and versions.
+      # Ignore major version updates and only update minor/patch versions
+      - dependency-name: "*"
+        update-types: [version-update:semver-major]
