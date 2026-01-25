@@ -11,7 +11,7 @@ concurrency:
 jobs:
   codeql:
     name: codeql
-    uses: reddyvr936/.github/github-workflows/.github/workflows/codeql-maven.yml@main
+    uses: ./.github/workflows/codeql-maven.yml@main
     with:
       java: 25
       pom: pom.xml

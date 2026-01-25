@@ -40,7 +40,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Deploy.git
-        uses: rvangala936/spring-boot-virtual-threads-demo/.github/workflows/app-build.yml@main
+        uses: ./.github/workflows/app-build.yml@main
         with:
           branch: ${{ github.ref_name }}
           env: ${{ inputs.environment }}
