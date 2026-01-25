@@ -33,6 +33,7 @@ jobs:
         env:
           PR_URL: ${{ github.envent.pull_request.html_url }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ENV: ${{ inputs.environment }}
 
   deploy:
     name: Merge PR
@@ -41,10 +42,6 @@ jobs:
     steps:
       - name: Deploy.git
         uses: ./.github/workflows/app-build.yml@main
-        with:
-          branch: ${{ github.ref_name }}
-          env: ${{ inputs.environment }}
-          jiraIssue: ${{ inputs.jiraIssue }}
 
       - name: create Tag
         id: logging
