@@ -77,6 +77,9 @@ updates:
       # this is optional. Adds prefix "npm" to PRs
       prefix: npm
     groups:
+#      minor-actions-dependencies:
+#        # GitHub Actions: Only group minor and patch updates (we want to carefully review major updates)
+#        update-types: [ minor, patch ]
       all-dependencies:
         patterns:
           - "*"

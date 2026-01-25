@@ -24,9 +24,13 @@ jobs:
   merge-pr:
     name: Merge PR
     runs-on: ubuntu-latest
+    # Sets the permissions granted to the `GITHUB_TOKEN` for the actions in this job.
+    permissions:
+      contents: read
+      packages: write
     steps:
       - name: Checkout repository
-        run: actions/checkout@v4
+        run: actions/checkout@v6
 
       - name: Merge pr
         run: gh pr merge --auto -squash "$PR_URL"
