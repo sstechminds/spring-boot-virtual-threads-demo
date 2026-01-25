@@ -174,3 +174,16 @@ git push -uf origin main
 https://www.baeldung.com/spring-6-virtual-threads
 
 ```
+
+## Use Agent SKILLS and OpenCode
+[Agent SKILLS](https://skills.sh)
+```
+npm install skills
+npx skills add https://github.com/snakeo/claude-debug-and-refactor-skills-plugin --skill debug:spring-boot
+```
+
+[OpenCode](https://opencode.ai/)
+```
+npm i -g opencode-ai 
+opencode -> /connect -> Select your LLM
+```
