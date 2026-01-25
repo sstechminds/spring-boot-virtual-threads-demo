@@ -42,12 +42,6 @@ jobs:
           PR_URL: ${{ github.envent.pull_request.html_url }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ENV: ${{ inputs.environment }}
-
-  deploy:
-    name: Merge PR
-    needs: merge-pr
-    runs-on: ubuntu-latest
-    steps:
       - name: create Tag
         id: logging
         if: contains(env.environment, 'dev') && success()
@@ -55,6 +49,8 @@ jobs:
           ls -al
           echo "$(date)"
 
-      - name: Deploy.git
-        # {org}/{repo}[/path]@ref
-        uses: sstechminds/spring-boot-virtual-threads-demo/.github/workflows/app-build.yml@main
+  deploy:
+    name: Merge PR
+    needs: merge-pr
+    # {org}/{repo}[/path]@ref
+    uses: sstechminds/spring-boot-virtual-threads-demo/.github/workflows/app-build.yml@main
