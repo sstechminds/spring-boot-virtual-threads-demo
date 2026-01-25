@@ -47,11 +47,12 @@ jobs:
     needs: merge-pr
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy.git
-        uses: ./.github/workflows/app-build.yml@main
-
       - name: create Tag
         id: logging
         if: contains(env.environment, 'dev') && success()
         run: |
+          ls -al
           echo "$(date)"
+
+      - name: Deploy.git
+        uses: ./.github/workflows/app-build.yml

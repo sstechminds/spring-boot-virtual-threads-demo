@@ -43,7 +43,6 @@ jobs:
 
       - name: call my action
         id: action
-        uses: ./.github/actions/custom-actions
         with:
           testEnv: ${{ env.environment }}
         run: |
