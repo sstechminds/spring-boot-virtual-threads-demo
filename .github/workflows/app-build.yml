@@ -50,8 +50,8 @@ jobs:
 
       - name: Log status
         id: logging
-        if: always()
-        with:
-          testEnv: ${{ env.environment }}
+#        if: always()
+#        with:
+#          testEnv: ${{ env.environment }}
         run: |
           echo "$(date)"
