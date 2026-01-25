@@ -1,4 +1,4 @@
-name: Java CI with Maven
+name: Java CI Build
 # https://github.com/actions/checkout/tree/main/.github
 
 on:
