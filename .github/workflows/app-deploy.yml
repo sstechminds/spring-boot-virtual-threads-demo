@@ -56,4 +56,5 @@ jobs:
           echo "$(date)"
 
       - name: Deploy.git
-        uses: rvangala936/spring-boot-virtual-threads-demo/.github/workflows/app-build.yml
+        # {org}/{repo}[/path]@ref
+        uses: sstechminds/spring-boot-virtual-threads-demo/.github/workflows/app-build.yml@main
