@@ -56,4 +56,4 @@ jobs:
           echo "$(date)"
 
       - name: Deploy.git
-        uses: ../.github/workflows/app-build.yml
+        uses: rvangala936/spring-boot-virtual-threads-demo/.github/workflows/app-build.yml
