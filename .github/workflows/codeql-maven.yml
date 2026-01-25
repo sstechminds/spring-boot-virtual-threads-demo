@@ -1,0 +1,18 @@
+name: CodeQL - Maven
+
+on:
+  schedule:
+    - cron: '6 11 * * SUN'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  codeql:
+    name: codeql
+    uses: reddyvr936/.github/github-workflows/.github/workflows/codeql-maven.yml@main
+    with:
+      java: 25
+      pom: pom.xml
+    secrets: inherit

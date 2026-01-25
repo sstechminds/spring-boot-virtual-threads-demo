@@ -1,0 +1,53 @@
+name: Java CI with Maven
+
+on:
+ workflow_dispatch:
+   inputs:
+     environment:
+       description: 'Env to deploy'
+       required: true
+       default: 'dev'
+       type: choice
+       options:
+         - dev
+         - test
+         - prod
+     jiraIssue:
+      default: ''
+      description: 'Jira issue number'
+      required: false
+
+permissions:
+  contents: write
+
+jobs:
+  merge-pr:
+    name: Merge PR
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        run: actions/checkout@v4
+
+      - name: Merge pr
+        run: gh pr merge --auto -squash "$PR_URL"
+        env:
+          PR_URL: ${{ github.envent.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  deploy:
+    name: Merge PR
+    needs: merge-pr
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy.git
+        uses: rvangala936/spring-boot-virtual-threads-demo/.github/workflows/app-build.yml@main
+        with:
+          branch: ${{ github.ref_name }}
+          env: ${{ inputs.environment }}
+          jiraIssue: ${{ inputs.jiraIssue }}
+
+      - name: create Tag
+        id: logging
+        if: contains(env.environment, 'dev') && success()
+        run: |
+          echo "$(date)"

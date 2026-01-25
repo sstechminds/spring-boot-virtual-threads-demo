@@ -1,0 +1,23 @@
+name: 'Hello World Action'
+description: 'Greet someone and record the time'
+
+inputs:
+  who-to-greet:
+    description: 'Who to greet'
+    required: false
+    default: 'World'
+
+outputs:
+  time:
+    description: 'The time we greeted you'
+    value: ''
+
+runs:
+  using: 'composite' # node21
+  
+  steps:
+    - name: logit
+      id: logit
+      run: |
+        echo ""This is a custom run"
+      shell: bash
