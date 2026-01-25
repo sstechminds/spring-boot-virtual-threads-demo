@@ -22,7 +22,7 @@ jobs:
           echo "environment=dev" >> $GITHUB_ENV
 
       - name: Checkout repository
-        run: actions/checkout@v6
+        run: actions/checkout@v4
 
       - name: Set up JDK 25
         uses: actions/setup-java@v4
