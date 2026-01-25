@@ -18,7 +18,9 @@ on:
       required: false
 
 permissions:
-  contents: write
+  actions: read
+  contents: read
+  security-events: write
 
 jobs:
   merge-pr:
@@ -26,8 +28,9 @@ jobs:
     runs-on: ubuntu-latest
     # Sets the permissions granted to the `GITHUB_TOKEN` for the actions in this job.
     permissions:
+      actions: read
       contents: read
-      packages: write
+      security-events: write
     steps:
       - name: Checkout repository
         run: actions/checkout@v6
