@@ -1,2 +1,2 @@
-com.web.opentelemetry.logging.TomcatLoggingAutoConfiguration
-com.web.opentelemetry.tracing.TracingAutoConfig
+com.web.opentelemetry.observability.logging.TomcatLoggingAutoConfiguration
+com.web.opentelemetry.observability.tracing.TracingAutoConfig
