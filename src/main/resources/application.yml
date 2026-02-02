@@ -1,0 +1,66 @@
+spring:
+  application:
+    name: spring-boot-virtual-thread-demo
+
+  threads:
+    virtual:
+      enabled: true
+
+  task:
+    execution:
+      thread-name-prefix: thread-
+      pool:
+        core-size: 10
+        max-size: 100
+
+server:
+  port: 8080
+
+management:
+  endpoints:
+    web:
+      # Enable all actuator endpoints (optional, for monitoring actuator itself)
+      exposure:
+        include: health,info,metrics,prometheus
+
+  endpoint:
+    health:
+      show-details: always
+
+  # Disable OTLP metrics and tracing export (no OTLP receiver running)
+  otlp:
+    metrics:
+      export:
+        enabled: false
+
+  #Micrometer Tracing Bridge Brave dependency was trying to export metrics to an OpenTelemetry (OTLP) collector. So, disabled it for now!
+  tracing:
+    export:
+      otlp:
+        enabled: false
+
+    baggage:
+      # Propagates a field named "requestId" to remote services via an HTTP header named "requestId"
+      remote-fields: requestId,sessionId
+      # Adds the "requestId" to the MDC for logging purposes
+      correlation:
+        fields: requestId,sessionId
+
+    # Sets the propagation type to W3C (default)
+    propagation:
+      type: W3C
+
+spring.mvc.log-request-details: true
+
+logging:
+  level:
+    root: INFO
+    web: TRACE # this is in combination with spring.mvc.log-request-details
+    com.example.demo: DEBUG
+    org.springframework: INFO
+    org.springframework.web: TRACE
+    org.springframework.core.task: DEBUG
+
+  pattern:
+    # Logging pattern with thread information (useful for virtual threads)
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [Req: %X{requestId}] %-5level %logger{36} - %msg%n"
