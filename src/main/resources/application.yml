@@ -1,11 +1,9 @@
 spring:
   application:
     name: spring-boot-virtual-thread-demo
-
   threads:
     virtual:
       enabled: true
-
   task:
     execution:
       thread-name-prefix: thread-
@@ -17,46 +15,64 @@ server:
   port: 8080
 
 management:
-  endpoints:
-    web:
-      # Enable all actuator endpoints (optional, for monitoring actuator itself)
-      exposure:
-        include: health,info,metrics,prometheus
-
+  server:
+    port: 9090
+  security:
+    enabled: false
   endpoint:
     health:
       show-details: always
+  endpoints:
+    enabled-by-default: true
+    health:
+      show-details: always
+    web:
+      base-apth: /
+      # Enable all actuator endpoints (optional, for monitoring actuator itself)
+      exposure:
+        include: health,info,metrics,prometheus # *
+  # Metrics
+  metrics:
+    web:
+      server:
+        auto-time-requests: true
+    distribution:
+      percentiles:
+        http.server.requests: 0.5, 0.95, 0.99 # Configure 50th, 95th, and 99th percentiles
+      percentiles-histogram:
+        http.server.requests: true
 
   # Disable OTLP metrics and tracing export (no OTLP receiver running)
   otlp:
     metrics:
       export:
         enabled: false
-
+    tracking:
+      export:
+        enabled: false
+    logs:
+      export:
+        enabled: false
   #Micrometer Tracing Bridge Brave dependency was trying to export metrics to an OpenTelemetry (OTLP) collector. So, disabled it for now!
   tracing:
     export:
       otlp:
         enabled: false
-
     baggage:
       # Propagates a field named "requestId" to remote services via an HTTP header named "requestId"
-      remote-fields: requestId,sessionId
+      remote-fields: requestId,sessionId, X-sstechminds-request-id, X-sstechminds-host-id
       # Adds the "requestId" to the MDC for logging purposes
       correlation:
-        fields: requestId,sessionId
-
-    # Sets the propagation type to W3C (default)
-    propagation:
-      type: W3C
+        fields: requestId,sessionId, X-sstechminds-request-id, X-sstechminds-host-id
+      sampling:
+        probabilty: 1.0
 
 spring.mvc.log-request-details: true
-
 logging:
   level:
     root: INFO
     web: TRACE # this is in combination with spring.mvc.log-request-details
-    com.example.demo: DEBUG
+    com.web.opentelemetry: DEBUG
     org.springframework: INFO
     org.springframework.web: TRACE
     org.springframework.core.task: DEBUG
