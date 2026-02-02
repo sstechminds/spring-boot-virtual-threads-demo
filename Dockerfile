@@ -13,6 +13,7 @@ LABEL com.sstechminds.demo="java25 sb4"
 WORKDIR /app
 # Copy the JAR file from the builder stage
 COPY --from=builder /app/target/*.jar app.jar
+# https://andrewbaker.ninja/2025/12/23/java-25-aot-cache-a-deep-dive-into-ahead-of-time-compilation-and-training/
 RUN  echo "Compile and Run app in optimized mode to improve startup time..."
 RUN java -Djarmode=tools -jar /app/app.jar extract --destination application
 RUN cp -fr application/* .
@@ -20,5 +21,7 @@ RUN cp -fr application/* .
 RUN java -XX:+UseCompactObjectHeaders -XX:AOTCacheOutput=app.aot -Dspring.context.exit=onRefresh -jar app.jar
 
 EXPOSE 8080
+#https://github.com/krallin/tini
+#ENV JAVA_TOOL_OPTIONS="-XX:AOTCache=app.aot -XX:AOTMode=load"
 # 75% ensures allocated memory and resources are used efficiently. AND, enough memory is reserved/left(25%) for the non-heap usage(avoids OutOfMemory errors).
 ENTRYPOINT ["java", "-XX:MaxRAMPercentage=75", "-XshowSettings:system", "-XX:AOTCache=app.aot", "-XX:+UseCompactObjectHeaders", "-jar", "app.jar"]

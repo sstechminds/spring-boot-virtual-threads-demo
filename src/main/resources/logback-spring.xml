@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Logback config for logs emitted by the application -->
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/default.xml"/>
+
+    <springProfile name="local">
+        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+                <charset>utf8</charset>
+            </encoder>
+        </appender>
+        <logger name="org.springframework.web" level="DEBUG"/>
+        <logger name="comm.sstechminds" level="DEBUG"/>
+        <root level="INFO">
+            <appender-ref ref="CONSOLE" />
+        </root>
+    </springProfile>
+
+    <springProfile name="!local">
+        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+                <charset>utf8</charset>
+            </encoder>
+        </appender>
+        <logger name="org.springframework.web" level="INFO"/>
+        <logger name="comm.sstechminds" level="INFO"/>
+        <root level="WARN">
+            <appender-ref ref="CONSOLE" />
+        </root>
+    </springProfile>
+
+    <!-- Prevent logback from outputting its own status at the start of every log-->
+    <statusListener class="ch.qos.logback.core.status.NopStatusListener" />
+</configuration>
