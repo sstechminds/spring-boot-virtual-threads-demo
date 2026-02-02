@@ -1,4 +1,4 @@
-package com.web.opentelemetry.logging;
+package com.web.opentelemetry.observability.logging;
 
 import ch.qos.logback.access.tomcat.LogbackValve;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +18,9 @@ public class TomcatLoggingAutoConfiguration {
     @Bean
     public TomcatContextCustomizer tomcatContextCustomizer() {
         return context -> {
+
+            context.setUseRelativeRedirects(true); //enables  Tomcat contexts to support relative redirects
+
             LogbackValve logbackValue = new LogbackValve();
             logbackValue.setFilename("logback-access.xml");
             logbackValue.setQuiet(false);
