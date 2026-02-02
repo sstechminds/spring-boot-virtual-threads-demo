@@ -38,6 +38,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+            <version>1.18.42</version> <!-- Use the latest version, or let Spring Boot manage it -->
         </dependency>
 
         <!-- Micrometer for Metrics -->
@@ -112,6 +113,7 @@
                         <path>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
+                            <version>1.18.42</version> <!-- Use the latest version, or let Spring Boot manage it -->
                         </path>
                     </annotationProcessorPaths>
                 </configuration>

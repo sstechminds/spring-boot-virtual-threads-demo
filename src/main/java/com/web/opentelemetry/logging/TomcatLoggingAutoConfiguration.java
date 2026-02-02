@@ -3,7 +3,6 @@ package com.web.opentelemetry.logging;
 import ch.qos.logback.access.tomcat.LogbackValve;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.tomcat.TomcatContextCustomizer;
 import org.springframework.context.annotation.Bean;
@@ -25,4 +24,15 @@ public class TomcatLoggingAutoConfiguration {
             context.getPipeline().addValve(logbackValue);
         };
     }
+
+//    @Bean
+//    public WebServerFactoryCustomizer<TomcatServletWebServerFactory> accessLogsCustomizer() {
+//        return factory -> {
+//            var logbackValve = new LogbackValve();
+//            logbackValve.setFilename("logback-access.xml");
+//            logbackValve.setQuiet(false);
+//            logbackValve.setAsyncSupported(true);
+//            factory.addContextValves(logbackValve);
+//        };
+//    }
 }

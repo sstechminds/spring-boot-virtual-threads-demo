@@ -2,8 +2,7 @@ package com.web.opentelemetry.controller;
 
 import com.web.opentelemetry.service.AsyncTaskService;
 import jakarta.servlet.http.HttpServletRequest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.task.AsyncTaskExecutor;
@@ -18,11 +17,11 @@ import java.util.concurrent.ExecutionException;
 
 import static com.web.opentelemetry.interceptor.TraceHttpInterceptor.HEADER_REQUEST_ID;
 
-//@Slf4j
+@Slf4j
 @RestController
 @RequestMapping("/api")
 public class ThreadsLogTraceController {
-    static final Logger log = LoggerFactory.getLogger(ThreadsLogTraceController.class);
+//    static final Logger log = LoggerFactory.getLogger(ThreadsLogTraceController.class);
 
     @Autowired
     RestClient restClient;

@@ -6,10 +6,12 @@
     <statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener" />
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder > <!-- class="ch.qos.logback.core.encoder.LayoutWrappingEncoder" -->
+        <encoder >
             <pattern>%h %l %u %user %date "%r" %s %b</pattern>
-<!--            <layout class="" />-->
         </encoder>
+<!--        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder" &ndash;&gt;-->
+<!--            <layout class="com.sstechminds.logging.JsonAccessLayout" />-->
+<!--        </encoder>-->
     </appender>
     <appender-ref ref="STDOUT" />
 </configuration>
