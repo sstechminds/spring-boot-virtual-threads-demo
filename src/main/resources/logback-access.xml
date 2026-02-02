@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- https://stegard.net/2021/02/spring-boot-http-access-logging-in-three-steps/ -->
+<!-- Logback config for access logs emitted by embedded servlet container -->
+<configuration>
+    <!-- always a good activate OnConsoleStatusListener -->
+    <statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener" />
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder > <!-- class="ch.qos.logback.core.encoder.LayoutWrappingEncoder" -->
+            <pattern>%h %l %u %user %date "%r" %s %b</pattern>
+<!--            <layout class="" />-->
+        </encoder>
+    </appender>
+    <appender-ref ref="STDOUT" />
+</configuration>
