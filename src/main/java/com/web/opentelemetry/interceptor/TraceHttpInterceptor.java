@@ -29,7 +29,7 @@ public class TraceHttpInterceptor implements ClientHttpRequestInterceptor {
                 // Generate new requestId (10 digits)
                 requestId = UUID.randomUUID().toString().replace("-", "").substring(0, 10);
             }
-            request.getHeaders().set(HEADER_REQUEST_ID, requestId);
+            request.getHeaders().add(HEADER_REQUEST_ID, requestId);
         }
 
         if (sessionId == null) {

@@ -1,7 +1,6 @@
 package com.web.opentelemetry.component;
 
 import org.springframework.http.client.ClientHttpRequestInterceptor;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.client.JdkClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
@@ -100,12 +99,12 @@ public class RestClientBuilderFactory {
         // Create HttpClient with virtual thread executor
         HttpClient.Builder httpClientBuilder = HttpClient.newBuilder();
         if(virtualThreadsEnabled) {
-            httpClientBuilder.executor(Executors.newVirtualThreadPerTaskExecutor());
+            httpClientBuilder.connectTimeout(Duration.ofMillis(10000)).executor(Executors.newVirtualThreadPerTaskExecutor());
         }
         if(connectTimeout != null) {
             httpClientBuilder.connectTimeout(connectTimeout);
         }
-        HttpClient httpClient = httpClientBuilder.build();
+        HttpClient httpClient = httpClientBuilder.connectTimeout(Duration.ofMillis(10000)).build();
         JdkClientHttpRequestFactory customFactory = new JdkClientHttpRequestFactory(httpClient);
         if(readTimeout != null) {
             customFactory.setReadTimeout(readTimeout);
