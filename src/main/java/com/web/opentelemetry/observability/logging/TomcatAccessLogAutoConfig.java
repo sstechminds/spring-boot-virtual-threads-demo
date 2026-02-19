@@ -5,12 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.tomcat.TomcatContextCustomizer;
+import org.springframework.boot.tomcat.servlet.TomcatServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
 
 @Slf4j
 @AutoConfiguration
 @ConditionalOnClass(name = {"org.apache.catalina.Context"})
-public class TomcatLoggingAutoConfiguration {
+public class TomcatAccessLogAutoConfig {
 
     /**
      * Setup embedded Tomcat logging using logback-access.xml file.
@@ -18,13 +19,13 @@ public class TomcatLoggingAutoConfiguration {
     @Bean
     public TomcatContextCustomizer tomcatContextCustomizer() {
         return context -> {
-
-            context.setUseRelativeRedirects(true); //enables  Tomcat contexts to support relative redirects
-
             LogbackValve logbackValue = new LogbackValve();
             logbackValue.setFilename("logback-access.xml");
+            logbackValue.setAsyncSupported(true);
             logbackValue.setQuiet(false);
+
             context.getPipeline().addValve(logbackValue);
+            context.setUseRelativeRedirects(true); //enables  Tomcat contexts to support relative redirects
         };
     }
 
@@ -38,4 +39,11 @@ public class TomcatLoggingAutoConfiguration {
 //            factory.addContextValves(logbackValve);
 //        };
 //    }
+
+    @Bean
+    public TomcatServletWebServerFactory servletContainer(TomcatContextCustomizer customizer) {
+        TomcatServletWebServerFactory factory = new TomcatServletWebServerFactory();
+        factory.addContextCustomizers(customizer);
+        return factory;
+    }
 }
