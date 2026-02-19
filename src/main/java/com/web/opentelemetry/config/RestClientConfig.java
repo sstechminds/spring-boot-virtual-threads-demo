@@ -7,8 +7,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.restclient.RestClientCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.http.client.JdkClientHttpRequestFactory;
 import org.springframework.http.converter.json.JacksonJsonHttpMessageConverter;
 import org.springframework.util.backoff.FixedBackOff;
 import org.springframework.web.client.RestClient;
@@ -17,7 +19,9 @@ import tools.jackson.databind.SerializationFeature;
 import tools.jackson.databind.cfg.DateTimeFeature;
 import tools.jackson.databind.json.JsonMapper;
 
+import java.net.http.HttpClient;
 import java.time.Duration;
+import java.util.concurrent.Executors;
 
 @Configuration
 public class RestClientConfig {
@@ -32,29 +36,21 @@ public class RestClientConfig {
         return new TraceHttpInterceptor();
     }
 
+//    @Bean
+//    public RestClient restClient(RestClientBuilderFactory restClientBuilderFactory) {
+//        if(this.virtualThreadsEnabled) {
+//            return restClientBuilderFactory.createWithVirtualThreads().build();
+//        } else {
+//            HttpComponentsClientHttpRequestFactory factory = clientHttpRequestFactory();
+//            return restClientBuilderFactory.create(builder ->
+//                    builder.requestFactory(factory) //add another factory
+//            ).build();
+//        }
+//    }
+
     @Bean
-    public RestClient restClient(RestClientBuilderFactory restClientBuilderFactory) {
-        if(this.virtualThreadsEnabled) {
-            return restClientBuilderFactory.createWithVirtualThreads().build();
-        } else {
-//            return restClientBuilderFactory.create().build();
-//            return restClientBuilderFactory
-//                    .addTimeout(Duration.ofSeconds(10), Duration.ofSeconds(10))
-//                    .defaultHeader("User-Agent", "Spring-Boot-App/1.0")
-//                    .build();
-            HttpComponentsClientHttpRequestFactory factory = clientHttpRequestFactory();
-            return restClientBuilderFactory.create(builder ->
-                    builder.requestFactory(factory) //add another factory
-
-            ).build();
-        }
-    }
-
-    @Bean("defaultPoolRestClient") //HttpComponentsClientHttpRequestFactory vs JdkClientHttpRequestFactory
     public RestClient restClient(RestClient.Builder builder) {
-                return builder
-                        .baseUrl("https://jsonplaceholder.typicode.com")
-                        .build();
+                return builder.build();
     }
 
     @Bean
@@ -62,7 +58,8 @@ public class RestClientConfig {
         return restClientBuilder -> {
             restClientBuilder
                     .defaultHeader("User-Agent", "Spring-Boot-App/1.0")
-                    .requestFactory(clientHttpRequestFactory())
+                    //.requestInterceptor(traceHttpInterceptor())
+                    .requestFactory(virtualClientHttpRequestFactory(Duration.ofSeconds(10), Duration.ofSeconds(10), virtualThreadsEnabled))
                     .requestInterceptor(new RetryableClientHttpRequestInterceptor(new FixedBackOff(100, 2)))
                     .configureMessageConverters(clientBuilder ->
                             clientBuilder.withJsonConverter(new JacksonJsonHttpMessageConverter(jsonMapper())));
@@ -85,5 +82,24 @@ public class RestClientConfig {
         factory.setConnectionRequestTimeout(Duration.ofSeconds(10));
         factory.setReadTimeout(Duration.ofSeconds(10));
         return factory;
+    }
+
+    private ClientHttpRequestFactory virtualClientHttpRequestFactory(Duration connectTimeout,
+                                                              Duration readTimeout,
+                                                              boolean virtualThreadsEnabled) {
+        // Create HttpClient with virtual thread executor
+        HttpClient.Builder httpClientBuilder = HttpClient.newBuilder();
+        if(virtualThreadsEnabled) {
+            httpClientBuilder.connectTimeout(Duration.ofSeconds(10)).executor(Executors.newVirtualThreadPerTaskExecutor());
+        }
+        if(connectTimeout != null) {
+            httpClientBuilder.connectTimeout(connectTimeout);
+        }
+        HttpClient httpClient = httpClientBuilder.connectTimeout(Duration.ofSeconds(10)).build();
+        JdkClientHttpRequestFactory customFactory = new JdkClientHttpRequestFactory(httpClient);
+        if(readTimeout != null) {
+            customFactory.setReadTimeout(readTimeout);
+        }
+        return customFactory;
     }
 }
