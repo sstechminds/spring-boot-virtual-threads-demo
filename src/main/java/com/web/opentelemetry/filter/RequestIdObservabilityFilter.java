@@ -15,7 +15,7 @@ import java.util.UUID;
 import static com.web.opentelemetry.observability.tracing.Constants.X_SSTECHMINDS_REQUEST_ID;
 
 @Component
-public class RequestIdFilter extends OncePerRequestFilter {
+public class RequestIdObservabilityFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(
