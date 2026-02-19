@@ -10,6 +10,8 @@ import org.springframework.web.client.RestClient;
 
 import java.util.concurrent.CompletableFuture;
 
+import static com.web.opentelemetry.observability.tracing.Constants.X_SSTECHMINDS_REQUEST_ID;
+
 @Service
 public class AsyncTaskService {
     private static final Logger logger = LoggerFactory.getLogger(AsyncTaskService.class);
@@ -20,11 +22,9 @@ public class AsyncTaskService {
     @Async("taskExecutor")
     public CompletableFuture<String> fetchDataAsync(String callId) {
         logger.info("Executing async-spring method: {} on thread: {}", callId, Thread.currentThread().getName());
-
         // Retrieve the value from MDC within the async thread
-        String requestId = MDC.get("requestId");
+        String requestId = MDC.get(X_SSTECHMINDS_REQUEST_ID);
         logger.info("Async task executing with requestId: {}", requestId);
-        MDC.put("requestId", requestId);
         try {
             String response = restClient.get()
                     .uri("http://localhost:8080/api/info")

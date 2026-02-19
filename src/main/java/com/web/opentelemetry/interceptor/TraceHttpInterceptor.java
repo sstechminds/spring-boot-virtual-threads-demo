@@ -9,17 +9,19 @@ import org.springframework.http.client.ClientHttpResponse;
 import java.io.IOException;
 import java.util.UUID;
 
+import static com.web.opentelemetry.observability.tracing.Constants.X_SSTECHMINDS_REQUEST_ID;
+
 public class TraceHttpInterceptor implements ClientHttpRequestInterceptor {
     public static final String HEADER_REQUEST_ID = "X-Request-ID";
     public static final String HEADER_SESSION_ID = "X-Session-ID";
 
     @Override
     public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
-        String requestId = request.getHeaders().getFirst(HEADER_REQUEST_ID);
+        String requestId = request.getHeaders().getFirst(HEADER_REQUEST_ID); //TODO: X_SSTECHMINDS_REQUEST_ID
         String sessionId = request.getHeaders().getFirst(HEADER_SESSION_ID);
 
         // Try to get requestId from MDC first (propagated from HttpServletRequest in controller)
-        String mdcRequestId = MDC.get("requestId");
+        String mdcRequestId = MDC.get(X_SSTECHMINDS_REQUEST_ID);
 
         // Use MDC values if available, otherwise check headers
         if (requestId == null) {
@@ -29,12 +31,12 @@ public class TraceHttpInterceptor implements ClientHttpRequestInterceptor {
                 // Generate new requestId (10 digits)
                 requestId = UUID.randomUUID().toString().replace("-", "").substring(0, 10);
             }
-            request.getHeaders().add(HEADER_REQUEST_ID, requestId);
+            request.getHeaders().add(X_SSTECHMINDS_REQUEST_ID, requestId);
         }
 
         if (sessionId == null) {
             sessionId = requestId;
-            request.getHeaders().set(HEADER_SESSION_ID, sessionId);
+            request.getHeaders().add(X_SSTECHMINDS_REQUEST_ID, sessionId);
         }
 
         return execution.execute(request, body);

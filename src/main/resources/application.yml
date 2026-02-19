@@ -1,3 +1,6 @@
+server:
+  port: 8080
+
 spring:
   application:
     name: spring-boot-virtual-thread-demo
@@ -11,8 +14,14 @@ spring:
         core-size: 10
         max-size: 100
 
-server:
-  port: 8080
+http:
+  client:
+    connect-timeout: 2000
+    read-timeout: 5000
+    pool:
+      max-connections: 100
+      max-idle: 100
+      idle-timeout: 30s
 
 management:
   server:
@@ -55,28 +64,29 @@ management:
         enabled: false
   #Micrometer Tracing Bridge Brave dependency was trying to export metrics to an OpenTelemetry (OTLP) collector. So, disabled it for now!
   tracing:
+    enabled: true
     export:
       otlp:
         enabled: false
     baggage:
       # Propagates a field named "requestId" to remote services via an HTTP header named "requestId"
-      remote-fields: requestId,sessionId, X-sstechminds-request-id, X-sstechminds-host-id
+      remote-fields: requestId,sessionId,X-sstechminds-request-id, X-sstechminds-host-id
       # Adds the "requestId" to the MDC for logging purposes
       correlation:
-        fields: requestId,sessionId, X-sstechminds-request-id, X-sstechminds-host-id
+        fields: requestId,sessionId,X-sstechminds-request-id,X-sstechminds-host-id
       sampling:
         probabilty: 1.0
 
 spring.mvc.log-request-details: true
 logging:
   level:
-    root: INFO
-    web: TRACE # this is in combination with spring.mvc.log-request-details
-    com.web.opentelemetry: DEBUG
-    org.springframework: INFO
-    org.springframework.web: TRACE
-    org.springframework.core.task: DEBUG
+    root: ERROR
+    com.web.opentelemetry: INFO
+#    web: TRACE # this is in combination with spring.mvc.log-request-details
+#    com.web.opentelemetry: DEBUG
+#    org.springframework.web: TRACE
+#    org.springframework.core.task: DEBUG
 
-  pattern:
-    # Logging pattern with thread information (useful for virtual threads)
-    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [Req: %X{requestId}] %-5level %logger{36} - %msg%n"
+#  pattern: # this configuration is overridden in logbacks-pring.xml
+#     Logging pattern with thread information (useful for virtual threads)
+#     console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [traceId=%X{traceId}][spanId=%X{spanId}][requestId=%X{X-sstechminds-request-id}] %-5level %logger{36} - %msg%n"
