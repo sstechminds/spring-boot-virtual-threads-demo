@@ -13,6 +13,8 @@ spring:
       pool:
         core-size: 10
         max-size: 100
+  mvc:
+    log-request-details: true
 
 http:
   client:
@@ -32,7 +34,6 @@ management:
     health:
       show-details: always
   endpoints:
-    enabled-by-default: true
     health:
       show-details: always
     web:
@@ -40,11 +41,15 @@ management:
       # Enable all actuator endpoints (optional, for monitoring actuator itself)
       exposure:
         include: health,info,metrics,prometheus # *
+    access:
+      default: unrestricted
   # Metrics
   metrics:
     web:
       server:
-        auto-time-requests: true
+        request:
+          autotime:
+            enabled: true
     distribution:
       percentiles:
         http.server.requests: 0.5, 0.95, 0.99 # Configure 50th, 95th, and 99th percentiles
@@ -64,10 +69,10 @@ management:
         enabled: false
   #Micrometer Tracing Bridge Brave dependency was trying to export metrics to an OpenTelemetry (OTLP) collector. So, disabled it for now!
   tracing:
-    enabled: true
     export:
       otlp:
         enabled: false
+      enabled: true
     baggage:
       # Propagates a field named "requestId" to remote services via an HTTP header named "requestId"
       remote-fields: requestId,sessionId,X-sstechminds-request-id, X-sstechminds-host-id
@@ -77,7 +82,6 @@ management:
       sampling:
         probabilty: 1.0
 
-spring.mvc.log-request-details: true
 logging:
   level:
     root: ERROR
